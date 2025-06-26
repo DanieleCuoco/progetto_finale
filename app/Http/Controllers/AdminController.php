@@ -58,6 +58,13 @@ class AdminController extends Controller
         $user->is_admin = true;
         $user->save();
 
+Log::info('User Changed in Administrator', [
+                'email' => Auth::user()->email,
+                'ip' => request()->ip(),
+                'timestamp' => now()->toDateTimeString(),
+                 ]);
+
+
         return redirect(route('admin.dashboard'))->with('message', "$user->name is now administrator");
     }
 
@@ -65,12 +72,26 @@ class AdminController extends Controller
         $user->is_revisor = true;
         $user->save();
 
+Log::info('User Changed in Revisor', [
+                'email' => Auth::user()->email,
+                'ip' => request()->ip(),
+                'timestamp' => now()->toDateTimeString(),
+                 ]);
+
+
         return redirect(route('admin.dashboard'))->with('message', "$user->name is now revisor");
     }
 
     public function setWriter(User $user){
         $user->is_writer = true;
         $user->save();
+
+Log::info('User Changed in Writer', [
+                'email' => Auth::user()->email,
+                'ip' => request()->ip(),
+                'timestamp' => now()->toDateTimeString(),
+                 ]);
+
 
         return redirect(route('admin.dashboard'))->with('message', "$user->name is now writer");
     }
