@@ -64,3 +64,14 @@ Creare un meccanismo che filtri il testo prima di salvarlo e per essere sicuri a
 # progetto_finale
 # progetto_finale
 # progetto_finale
+
+
+
+
+
+## challenge 1 ##
+
+importato file di attacco attacco.sh tramite terminale bash
+limitato con un rate::limiter che appunto limita le richieste possibili a 15/min
+
+impostato un middlewere anche alla barra di articles::search per evitare attacchi DOS tramite barra di ricerca
