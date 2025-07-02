@@ -111,6 +111,13 @@ class ArticleController extends Controller implements HasMiddleware
      */
     public function update(Request $request, Article $article)
     {
+
+        $request->merge([
+            'title' =>$this->sanitizeInput($request->input('title')),
+            'subtitle' =>$this->sanitizeInput($request->input('subtitle')),
+            'body' =>$this->sanitizeInput($request->input('body')),
+        ]);
+
         $request->validate([
             'title' => 'required|min:5|unique:articles,title,' . $article->id,
             'subtitle' => 'required|min:5',
@@ -197,4 +204,33 @@ Log::info('User Cancelled an Article', [
         $articles = Article::search($query)->where('is_accepted', true)->orderBy('created_at', 'desc')->get();
         return view('articles.search-index', compact('articles', 'query'));
     }
+
+// function sanitizeInput($input)
+// {
+//     // Rimuove tag <script> e il loro contenuto
+//     $input = preg_replace('#<script(.*?)>(.*?)</script>#is', '&lt;script$1&gt;$2&lt;/script&gt;', $input);
+//     // Rimuove tutti gli eventi JS tipo onclick, onerror, ecc.
+//     $input = preg_replace('/on\w+="[^"]*"/i', '', $input);
+//     $input = preg_replace("/on\w+='[^']*'/i", '', $input);
+//     // Rimuove javascript: in href/src
+//     $input = preg_replace('/(href|src)\s*=\s*["\']?\s*javascript:[^"\']*/i', '$1="#"', $input);
+//     // Escapa i tag HTML rimanenti
+//     $input = htmlspecialchars($input, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+//     return $input;
+// }
+
+function sanitizeInput($input) {
+        $pattern = [
+            '/<script\b[^>]>(.?)</script>/is',
+            '/on\w+="[^"]"/i',
+            "/on\w+='[^']'/i",
+            '/<[^>]+(javascript|data):[^>]+>/i'
+        ];
+        $cleanedText = preg_replace($pattern, '', $input);
+        return strip_tags($cleanedText); 
+    }
+
+
+
 }
+

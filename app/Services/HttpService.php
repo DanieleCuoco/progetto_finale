@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Auth;
 use GuzzleHttp\Exception\RequestException;
 
 class HttpService
@@ -20,6 +21,7 @@ class HttpService
 
     public function getRequest($url)
     {
+
         $parsedUrl = parse_url($url);
 
         // Validate protocol
@@ -31,6 +33,10 @@ class HttpService
         if (!isset($parsedUrl['host']) || !in_array($parsedUrl['host'], $this->allowedDomains)) {
             return 'Domain not allowed';
         }
+
+    //   if (!Auth::user()->hasRole('admin')) {
+    //         return 'Accesso negato';
+    //     }
 
         // Aggiungi l'intestazione Referer per le richieste al server locale
         $options['headers'] = ['Referer' => $this->refererHeader];
