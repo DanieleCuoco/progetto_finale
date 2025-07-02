@@ -44,6 +44,14 @@ class ArticleController extends Controller implements HasMiddleware
      */
     public function store(Request $request)
     {
+
+ $request->merge([
+            'title' =>$this->sanitizeInput($request->input('title')),
+            'subtitle' =>$this->sanitizeInput($request->input('subtitle')),
+            'body' =>$this->sanitizeInput($request->input('body')),
+        ]);
+
+
         $request->validate([
             'title' => 'required|unique:articles|min:5',
             'subtitle' => 'required|min:5',
@@ -219,16 +227,30 @@ Log::info('User Cancelled an Article', [
 //     return $input;
 // }
 
+
 function sanitizeInput($input) {
         $pattern = [
-            '/<script\b[^>]>(.?)</script>/is',
-            '/on\w+="[^"]"/i',
-            "/on\w+='[^']'/i",
-            '/<[^>]+(javascript|data):[^>]+>/i'
+            '/<script\b[^>]*>(.*?)<\/script>/is',       
+            '/on\w+="[^"]*"/i',                          
+            "/on\w+='[^']*'/i",                          
+            '/<[^>]+(javascript|data):[^>]+>/i'           
         ];
         $cleanedText = preg_replace($pattern, '', $input);
         return strip_tags($cleanedText); 
     }
+
+// function sanitizeInput($input) {
+//         $pattern = [
+//             '/<script\b[^>]>(.?)</script>/is',
+//             '/on\w+="[^"]"/i',
+//             "/on\w+='[^']'/i",
+//             '/<[^>]+(javascript|data):[^>]+>/i'
+//         ];
+//         $cleanedText = preg_replace($pattern, '', $input);
+//         return strip_tags($cleanedText); 
+//         $input = htmlspecialchars($input, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+//         return $input;
+//     }
 
 
 
